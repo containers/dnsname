@@ -1,2 +1,0 @@
-FROM registry.fedoraproject.org/fedora:latest
-RUN dnf update && dnf install -y golang && dnf -y clean all

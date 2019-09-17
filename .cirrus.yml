@@ -1,0 +1,14 @@
+env:
+  CIRRUS_WORKING_DIR: "/var/tmp/go/src/github.com/containers/dnsname"
+  CIRRUS_SHELL: "/bin/bash"
+  GOPATH: "/var/tmp/go"
+  PATH: "$PATH:/var/tmp/go/bin"
+
+validate_task:
+  container:
+    dockerfile: ci/Dockerfile
+  test_script:
+      - make validate
+      - make
+      - make install PREFIX=/usr
+      - test -x /usr/libexec/cni/dnsname
