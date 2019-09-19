@@ -67,10 +67,18 @@ test_task:
 
     depends_on:
         - validate
+    gce_instance:
+        matrix:
+            image_name: ${FEDORA_CACHE_IMAGE_NAME}
+            image_name: ${PRIOR_UBUNTU_CACHE_IMAGE_NAME}
 
     env:
         PATH: "$PATH:/var/tmp/go/bin"
 
+    setup_script:
+        - OS_RELEASE_ID="$(source /etc/os-release; echo $ID)"
+        - if [[ "$OS_RELEASE_ID" == "fedora" ]]; then dnf install -y dnsmasq; fi
+
     test_script:
         - make
-        - ./bin/dnsname --help  # STUB!
+        - make test
