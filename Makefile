@@ -46,7 +46,7 @@ endef
 
 .install.ginkgo:
 	if [ ! -x "$(GOBIN)/ginkgo" ]; then \
-		$(call go-get,github.com/onsi/ginkgo); \
+		$(call go-get,github.com/onsi/ginkgo/ginkgo); \
 	fi
 
 .install.gitvalidation:
@@ -66,8 +66,12 @@ install:
 clean:
 	rm -fr bin/
 
+test: .install.ginkgo
+	$(GO) test -v ./...
+
 .PHONY: \
 	binaries \
+	test \
 	gofmt \
 	lint \
 	validate
