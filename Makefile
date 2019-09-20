@@ -76,9 +76,16 @@ clean:
 test: .install.ginkgo
 	$(GO) test -v ./...
 
+vendor:
+	export GO111MODULE=on \
+		$(GO) mod tidy && \
+		$(GO) mod vendor && \
+		$(GO) mod verify
+
 .PHONY: \
 	binaries \
 	test \
 	gofmt \
 	lint \
-	validate
+	validate \
+	vendor
