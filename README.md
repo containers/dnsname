@@ -2,10 +2,6 @@
 
 ## Overview
 
-This plugin creates firewall rules to allow traffic to/from container IP address via the host network .
-It does not create any network interfaces and therefore does not set up connectivity by itself.
-It is intended to be used as a chained plugins.
-
 This plugin sets up the use of dnsmasq on a given CNI network so that Pods can resolve each other by name.  When configured,
 the pod and its IP address are added to a network specific hosts file that dnsmasq will read in.  Similarly, when a pod
 is removed from the network, it will remove the entry from the hosts file.  Each CNI network will have its own dnsmasq
