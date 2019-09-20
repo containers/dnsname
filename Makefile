@@ -37,7 +37,7 @@ binaries:
 install.tools: .install.gitvalidation .install.ginkgo .install.golangci-lint
 
 lint: .install.golangci-lint
-	$(GOBIN)/golangci-lint run --tests=false
+	$(GOBIN)/golangci-lint run
 
 define go-get
 	env GO111MODULE=off \
