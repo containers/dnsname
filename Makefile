@@ -1,3 +1,5 @@
+export GOPROXY=https://proxy.golang.org
+
 GO ?= go
 EPOCH_TEST_COMMIT ?= 394c06f491fe9f1c28a410e3b0b91916a5119406
 DESTDIR ?=
