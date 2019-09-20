@@ -10,7 +10,6 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/pkg/errors"
 	"golang.org/x/sys/unix"
 )
 
@@ -88,9 +87,6 @@ func (d dnsNameFile) getProcess() (*os.Process, error) {
 	pid, err := strconv.Atoi(strings.TrimSpace(string(pidFileContents)))
 	if err != nil {
 		return nil, err
-	}
-	if _, err := os.Stat(fmt.Sprintf("/proc/%d/", pid)); os.IsNotExist(err) {
-		return nil, errors.Wrapf(err, "dnsmasq process with PID %d does not exist", pid)
 	}
 	return os.FindProcess(pid)
 }
