@@ -12,6 +12,11 @@ GOPKGBASEDIR ?= $(shell dirname "$(GOPKGDIR)")
 SELINUXOPT ?= $(shell test -x /usr/sbin/selinuxenabled && selinuxenabled && echo -Z)
 
 GO_BUILD=$(GO) build
+# Go module support: set `-mod=vendor` to use the vendored sources
+ifeq ($(shell go help mod >/dev/null 2>&1 && echo true), true)
+        GO_BUILD=GO111MODULE=on $(GO) build -mod=vendor
+endif
+
 GOBIN := $(shell $(GO) env GOBIN)
 ifeq ($(GOBIN),)
 GOBIN := $(FIRST_GOPATH)/bin
