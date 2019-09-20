@@ -156,12 +156,10 @@ func cmdCheck(args *skel.CmdArgs) error {
 	if err := findDNSMasq(); err != nil {
 		return ErrBinaryNotFound
 	}
-	netConf, result, podname, err := parseConfig(args.StdinData, args.Args)
+	netConf, result, _, err := parseConfig(args.StdinData, args.Args)
 	if err != nil {
 		return errors.Wrap(err, "failed to parse config")
 	}
-
-	_ = podname
 
 	// Ensure we have previous result.
 	if result == nil {
