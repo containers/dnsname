@@ -10,6 +10,7 @@ import (
 	"strings"
 	"syscall"
 
+	"github.com/pkg/errors"
 	"golang.org/x/sys/unix"
 )
 
@@ -38,7 +39,7 @@ func (d dnsNameFile) hup() error {
 	if _, err := os.Stat(d.PidFile); os.IsNotExist(err) {
 		return d.start()
 	}
-	pid, err := d.getPidProcess()
+	pid, err := d.getProcess()
 	if err != nil {
 		return err
 	}
@@ -57,6 +58,7 @@ func isRunning(pid *os.Process) bool {
 	return true
 }
 
+// start starts the dnsmasq instance.
 func (d dnsNameFile) start() error {
 	args := []string{
 		"-u",
@@ -67,17 +69,18 @@ func (d dnsNameFile) start() error {
 	return cmd.Run()
 }
 
+// stop stops the dnsmasq instance.
 func (d dnsNameFile) stop() error {
-	pid, err := d.getPidProcess()
+	pid, err := d.getProcess()
 	if err != nil {
 		return err
 	}
 	return pid.Kill()
 }
 
-// getPidProcess reads the PID for the dnsmasq instance and returns it in the
-// form of an int
-func (d dnsNameFile) getPidProcess() (*os.Process, error) {
+// getProcess reads the PID for the dnsmasq instance and returns an
+// *os.Process. Returns an error if the PID does not exist.
+func (d dnsNameFile) getProcess() (*os.Process, error) {
 	pidFileContents, err := ioutil.ReadFile(d.PidFile)
 	if err != nil {
 		return nil, err
@@ -85,6 +88,9 @@ func (d dnsNameFile) getPidProcess() (*os.Process, error) {
 	pid, err := strconv.Atoi(strings.TrimSpace(string(pidFileContents)))
 	if err != nil {
 		return nil, err
+	}
+	if _, err := os.Stat(fmt.Sprintf("/proc/%d/", pid)); os.IsNotExist(err) {
+		return nil, errors.Wrapf(err, "dnsmasq process with PID %d does not exist", pid)
 	}
 	return os.FindProcess(pid)
 }

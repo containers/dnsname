@@ -186,7 +186,7 @@ func cmdCheck(args *skel.CmdArgs) error {
 		}
 	}()
 
-	pid, err := dnsNameConf.getPidProcess()
+	pid, err := dnsNameConf.getProcess()
 	if err != nil {
 		return err
 	}

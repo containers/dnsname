@@ -127,7 +127,7 @@ var _ = Describe("dnsname tests", func() {
 			Expect(err).To(BeNil())
 
 			// Check that the dns masq instance is running
-			pid, err := d.getPidProcess()
+			pid, err := d.getProcess()
 			Expect(err).To(BeNil())
 			// Send it a signal 0; if alive, error will be nil
 			err = pid.Signal(syscall.Signal(0))
@@ -166,7 +166,7 @@ var _ = Describe("dnsname tests", func() {
 			d, err := newDNSMasqFile("foobar.io", "dummy0", "test")
 			Expect(err).To(BeNil())
 
-			pid, err := d.getPidProcess()
+			pid, err := d.getProcess()
 			Expect(err).To(BeNil())
 			err = pid.Signal(syscall.Signal(0))
 			Expect(err).To(BeNil())
