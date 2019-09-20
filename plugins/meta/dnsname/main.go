@@ -75,6 +75,9 @@ func cmdAdd(args *skel.CmdArgs) error {
 	if err != nil {
 		return err
 	}
+	if err := lock.acquire(); err != nil {
+		return err
+	}
 	defer func() {
 		if err := lock.release(); err != nil {
 			logrus.Errorf("unable to release lock for '%s': %q", dnsNameConf.AddOnHostsFile, err)
@@ -119,6 +122,9 @@ func cmdDel(args *skel.CmdArgs) error {
 	domainBaseDir := filepath.Dir(dnsNameConf.PidFile)
 	lock, err := getLock(domainBaseDir)
 	if err != nil {
+		return err
+	}
+	if err := lock.acquire(); err != nil {
 		return err
 	}
 	defer func() {
@@ -169,6 +175,9 @@ func cmdCheck(args *skel.CmdArgs) error {
 	domainBaseDir := filepath.Dir(dnsNameConf.PidFile)
 	lock, err := getLock(domainBaseDir)
 	if err != nil {
+		return err
+	}
+	if err := lock.acquire(); err != nil {
 		return err
 	}
 	defer func() {

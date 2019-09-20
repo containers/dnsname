@@ -4,12 +4,13 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	"github.com/coreos/go-iptables/iptables"
 	"io/ioutil"
 	"net"
 	"os"
 	"strings"
 	"text/template"
+
+	"github.com/coreos/go-iptables/iptables"
 
 	"github.com/containernetworking/plugins/plugins/ipam/host-local/backend/disk"
 	"github.com/sirupsen/logrus"
@@ -20,7 +21,7 @@ type dnsNameLock struct {
 	lock *disk.FileLock
 }
 
-// release unlocks and closes the disk lock
+// release unlocks and closes the disk lock.
 func (m *dnsNameLock) release() error {
 	if err := m.lock.Unlock(); err != nil {
 		return err
@@ -28,14 +29,16 @@ func (m *dnsNameLock) release() error {
 	return m.lock.Close()
 }
 
-// getLock returns a dnsNameLock. the lock should be that of the configuration
-// directory for the domain.
+// acquire locks the disk lock.
+func (m *dnsNameLock) acquire() error {
+	return m.lock.Lock()
+}
+
+// getLock returns a dnsNameLock synchronizing the configuration directory for
+// the domain.
 func getLock(path string) (*dnsNameLock, error) {
 	l, err := disk.NewFileLock(path)
 	if err != nil {
-		return nil, err
-	}
-	if err := l.Lock(); err != nil {
 		return nil, err
 	}
 	return &dnsNameLock{l}, nil
