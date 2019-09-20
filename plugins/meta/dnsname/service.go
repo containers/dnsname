@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -18,7 +17,7 @@ import (
 func newDNSMasqFile(domainName, networkInterface, networkName string) (dnsNameFile, error) {
 	dnsMasqBinary, err := exec.LookPath("dnsmasq")
 	if err != nil {
-		return dnsNameFile{}, errors.New("the dnsmasq cni plugin requires the dnsmasq binary be in PATH")
+		return dnsNameFile{}, fmt.Errorf("the dnsmasq cni plugin requires the dnsmasq binary be in PATH")
 	}
 	masqConf := dnsNameFile{
 		ConfigFile:       makePath(networkName, confFileName),

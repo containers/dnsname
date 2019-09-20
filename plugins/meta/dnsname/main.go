@@ -28,7 +28,6 @@ package main
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -40,6 +39,7 @@ import (
 	"github.com/containernetworking/cni/pkg/types/current"
 	"github.com/containernetworking/cni/pkg/version"
 	bv "github.com/containernetworking/plugins/pkg/utils/buildversion"
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
 
@@ -49,7 +49,7 @@ func cmdAdd(args *skel.CmdArgs) error {
 	}
 	netConf, result, podname, err := parseConfig(args.StdinData, args.Args)
 	if err != nil {
-		return fmt.Errorf("failed to parse config: %v", err)
+		return errors.Wrap(err, "failed to parse config")
 	}
 	if netConf.PrevResult == nil {
 		return fmt.Errorf("must be called as chained plugin")
@@ -80,7 +80,7 @@ func cmdAdd(args *skel.CmdArgs) error {
 	}
 	defer func() {
 		if err := lock.release(); err != nil {
-			logrus.Errorf("unable to release lock for '%s': %q", dnsNameConf.AddOnHostsFile, err)
+			logrus.Errorf("unable to release lock for %q: %v", dnsNameConf.AddOnHostsFile, err)
 		}
 	}()
 	if err := checkForDNSMasqConfFile(dnsNameConf); err != nil {
@@ -110,9 +110,8 @@ func cmdDel(args *skel.CmdArgs) error {
 	}
 	netConf, result, podname, err := parseConfig(args.StdinData, args.Args)
 	if err != nil {
-		return fmt.Errorf("failed to parse config: %v", err)
-	}
-	if result == nil {
+		return errors.Wrap(err, "failed to parse config")
+	} else if result == nil {
 		return nil
 	}
 	dnsNameConf, err := newDNSMasqFile(netConf.DomainName, result.Interfaces[0].Name, netConf.Name)
@@ -130,7 +129,7 @@ func cmdDel(args *skel.CmdArgs) error {
 	defer func() {
 		// if the lock isn't given up by another process
 		if err := lock.release(); err != nil {
-			logrus.Errorf("unable to release lock for '%s': %q", domainBaseDir, err)
+			logrus.Errorf("unable to release lock for %q: %v", domainBaseDir, err)
 		}
 	}()
 	shouldHUP, err := removeFromFile(filepath.Join(domainBaseDir, hostsFileName), podname)
@@ -159,7 +158,7 @@ func cmdCheck(args *skel.CmdArgs) error {
 	}
 	netConf, result, podname, err := parseConfig(args.StdinData, args.Args)
 	if err != nil {
-		return fmt.Errorf("failed to parse config: %v", err)
+		return errors.Wrap(err, "failed to parse config")
 	}
 
 	_ = podname
@@ -183,7 +182,7 @@ func cmdCheck(args *skel.CmdArgs) error {
 	defer func() {
 		// if the lock isn't given up by another process
 		if err := lock.release(); err != nil {
-			logrus.Errorf("unable to release lock for '%s': %q", domainBaseDir, err)
+			logrus.Errorf("unable to release lock for %q: %v", domainBaseDir, err)
 		}
 	}()
 
@@ -194,7 +193,7 @@ func cmdCheck(args *skel.CmdArgs) error {
 
 	// Ensure the dnsmasq instance is running
 	if !isRunning(pid) {
-		return errors.New("dnsmasq instance not running")
+		return fmt.Errorf("dnsmasq instance not running")
 	}
 	// Above will make sure the pidfile exists
 	files, err := ioutil.ReadDir(dnsNameConfPath)
@@ -205,10 +204,10 @@ func cmdCheck(args *skel.CmdArgs) error {
 		conffiles = append(conffiles, f.Name())
 	}
 	if !stringInSlice("addnhosts", conffiles) {
-		return errors.New("addnhost file missing from configuration")
+		return fmt.Errorf("addnhost file missing from configuration")
 	}
 	if !stringInSlice("dnsmasq.conf", conffiles) {
-		return errors.New("dnsmasq.conf file missing from configuration")
+		return fmt.Errorf("dnsmasq.conf file missing from configuration")
 	}
 	return nil
 }
@@ -233,18 +232,18 @@ type podname struct {
 func parseConfig(stdin []byte, args string) (*DNSNameConf, *current.Result, string, error) {
 	conf := DNSNameConf{}
 	if err := json.Unmarshal(stdin, &conf); err != nil {
-		return nil, nil, "", fmt.Errorf("failed to parse network configuration: %v", err)
+		return nil, nil, "", errors.Wrap(err, "failed to parse network configuration")
 	}
 	// Parse previous result.
 	var result *current.Result
 	if conf.RawPrevResult != nil {
 		var err error
 		if err = version.ParsePrevResult(&conf.NetConf); err != nil {
-			return nil, nil, "", fmt.Errorf("could not parse prevResult: %v", err)
+			return nil, nil, "", errors.Wrap(err, "could not parse prevResult")
 		}
 		result, err = current.NewResultFromResult(conf.PrevResult)
 		if err != nil {
-			return nil, nil, "", fmt.Errorf("could not convert result to current version: %v", err)
+			return nil, nil, "", errors.Wrap(err, "could not convert result to current version")
 		}
 	}
 	e := podname{}

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"errors"
+	"fmt"
 	"net"
 
 	"github.com/containernetworking/cni/pkg/types/current"
@@ -24,7 +24,7 @@ func getIPs(r *current.Result) ([]*net.IPNet, error) {
 			if isInterfaceIndexSandox(*ip.Interface, r) {
 				ips = append(ips, &ip.Address)
 			} else {
-				return nil, errors.New("unable to check if interface has a sandbox due to index being out of range")
+				return nil, fmt.Errorf("unable to check if interface has a sandbox due to index being out of range")
 			}
 		}
 	}

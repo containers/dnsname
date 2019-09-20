@@ -95,7 +95,7 @@ func appendToFile(path, podname string, ips []*net.IPNet) error {
 	}
 	defer func() {
 		if err := f.Close(); err != nil {
-			logrus.Errorf("failed to close file '%s': %q", path, err)
+			logrus.Errorf("failed to close file %q: %v", path, err)
 		}
 	}()
 	for _, ip := range ips {
@@ -127,7 +127,7 @@ func removeFromFile(path, podname string) (bool, error) {
 	}
 	defer func() {
 		if err := f.Close(); err != nil {
-			logrus.Errorf("unable to close '%s': %q", backup, err)
+			logrus.Errorf("unable to close %q: %v", backup, err)
 		}
 	}()
 
@@ -164,7 +164,7 @@ func removeFromFile(path, podname string) (bool, error) {
 // renameFile renames a file to backup
 func renameFile(oldpath, newpath string) {
 	if renameError := os.Rename(oldpath, newpath); renameError != nil {
-		logrus.Errorf("unable to restore '%s' to '%s': %q", oldpath, newpath, renameError)
+		logrus.Errorf("unable to restore %q to %q: %v", oldpath, newpath, renameError)
 	}
 }
 
@@ -178,7 +178,7 @@ func writeFile(path string, content []string) (int, error) {
 	}
 	defer func() {
 		if err := f.Close(); err != nil {
-			logrus.Errorf("unable to close '%s': %q", path, err)
+			logrus.Errorf("unable to close %q: %v", path, err)
 		}
 	}()
 
