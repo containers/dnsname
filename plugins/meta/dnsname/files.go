@@ -10,9 +10,8 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/coreos/go-iptables/iptables"
-
 	"github.com/containernetworking/plugins/plugins/ipam/host-local/backend/disk"
+	"github.com/coreos/go-iptables/iptables"
 	"github.com/sirupsen/logrus"
 )
 

@@ -28,7 +28,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -52,7 +51,7 @@ func cmdAdd(args *skel.CmdArgs) error {
 		return errors.Wrap(err, "failed to parse config")
 	}
 	if netConf.PrevResult == nil {
-		return fmt.Errorf("must be called as chained plugin")
+		return errors.Errorf("must be called as chained plugin")
 	}
 	ips, err := getIPs(result)
 	if err != nil {
@@ -163,7 +162,7 @@ func cmdCheck(args *skel.CmdArgs) error {
 
 	// Ensure we have previous result.
 	if result == nil {
-		return fmt.Errorf("Required prevResult missing")
+		return errors.Errorf("Required prevResult missing")
 	}
 	dnsNameConf, err := newDNSMasqFile(netConf.DomainName, result.Interfaces[0].Name, netConf.Name)
 	if err != nil {
@@ -191,7 +190,7 @@ func cmdCheck(args *skel.CmdArgs) error {
 
 	// Ensure the dnsmasq instance is running
 	if !isRunning(pid) {
-		return fmt.Errorf("dnsmasq instance not running")
+		return errors.Errorf("dnsmasq instance not running")
 	}
 	// Above will make sure the pidfile exists
 	files, err := ioutil.ReadDir(dnsNameConfPath)
@@ -202,10 +201,10 @@ func cmdCheck(args *skel.CmdArgs) error {
 		conffiles = append(conffiles, f.Name())
 	}
 	if !stringInSlice("addnhosts", conffiles) {
-		return fmt.Errorf("addnhost file missing from configuration")
+		return errors.Errorf("addnhost file missing from configuration")
 	}
 	if !stringInSlice("dnsmasq.conf", conffiles) {
-		return fmt.Errorf("dnsmasq.conf file missing from configuration")
+		return errors.Errorf("dnsmasq.conf file missing from configuration")
 	}
 	return nil
 }

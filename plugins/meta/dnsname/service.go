@@ -10,6 +10,7 @@ import (
 	"strings"
 	"syscall"
 
+	"github.com/pkg/errors"
 	"golang.org/x/sys/unix"
 )
 
@@ -17,7 +18,7 @@ import (
 func newDNSMasqFile(domainName, networkInterface, networkName string) (dnsNameFile, error) {
 	dnsMasqBinary, err := exec.LookPath("dnsmasq")
 	if err != nil {
-		return dnsNameFile{}, fmt.Errorf("the dnsmasq cni plugin requires the dnsmasq binary be in PATH")
+		return dnsNameFile{}, errors.Errorf("the dnsmasq cni plugin requires the dnsmasq binary be in PATH")
 	}
 	masqConf := dnsNameFile{
 		ConfigFile:       makePath(networkName, confFileName),
