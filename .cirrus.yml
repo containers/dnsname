@@ -61,6 +61,8 @@ validate_task:
 
     validate_script:
       - make validate
+      - make vendor
+      - ./hack/tree_status.sh
       - make
 
 test_task:

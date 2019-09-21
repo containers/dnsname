@@ -1,3 +1,5 @@
+export GOPROXY=https://proxy.golang.org
+
 GO ?= go
 EPOCH_TEST_COMMIT ?= 394c06f491fe9f1c28a410e3b0b91916a5119406
 DESTDIR ?=
@@ -12,6 +14,11 @@ GOPKGBASEDIR ?= $(shell dirname "$(GOPKGDIR)")
 SELINUXOPT ?= $(shell test -x /usr/sbin/selinuxenabled && selinuxenabled && echo -Z)
 
 GO_BUILD=$(GO) build
+# Go module support: set `-mod=vendor` to use the vendored sources
+ifeq ($(shell go help mod >/dev/null 2>&1 && echo true), true)
+        GO_BUILD=GO111MODULE=on $(GO) build -mod=vendor
+endif
+
 GOBIN := $(shell $(GO) env GOBIN)
 ifeq ($(GOBIN),)
 GOBIN := $(FIRST_GOPATH)/bin
@@ -37,7 +44,7 @@ binaries:
 install.tools: .install.gitvalidation .install.ginkgo .install.golangci-lint
 
 lint: .install.golangci-lint
-	$(GOBIN)/golangci-lint run --tests=false
+	$(GOBIN)/golangci-lint run
 
 define go-get
 	env GO111MODULE=off \
@@ -69,9 +76,16 @@ clean:
 test: .install.ginkgo
 	$(GO) test -v ./...
 
+vendor:
+	export GO111MODULE=on \
+		$(GO) mod tidy && \
+		$(GO) mod vendor && \
+		$(GO) mod verify
+
 .PHONY: \
 	binaries \
 	test \
 	gofmt \
 	lint \
-	validate
+	validate \
+	vendor
