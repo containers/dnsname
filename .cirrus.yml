@@ -1,22 +1,29 @@
 ---
 
 env:
+    DEST_BRANCH: "master"
     GOPATH: "/var/tmp/go"
-    CIRRUS_WORKING_DIR: "${GOPATH}/src/github.com/containers/dnsname"
+    CIRRUS_WORKING_DIR: "${GOPATH}/src/github.com/containers/oci-seccomp-bpf-hook"
+    GOSRC: "$CIRRUS_WORKING_DIR"
+    SCRIPT_BASE: "./contrib/cirrus"
     CIRRUS_SHELL: "/bin/bash"
     IMAGE_PROJECT: "libpod-218412"
     HOME: "/root"  # not set by default
     GOCACHE: "${HOME}/.cache/go-build"
 
     # VM Images are maintained in the libpod repo.
-    _BUILT_IMAGE_SUFFIX: "libpod-5664838702858240"
-    FEDORA_CACHE_IMAGE_NAME: "fedora-30-${_BUILT_IMAGE_SUFFIX}"
-    PRIOR_FEDORA_CACHE_IMAGE_NAME: "fedora-29-${_BUILT_IMAGE_SUFFIX}"
-    UBUNTU_CACHE_IMAGE_NAME: "ubuntu-19-${_BUILT_IMAGE_SUFFIX}"
-    PRIOR_UBUNTU_CACHE_IMAGE_NAME: "ubuntu-18-${_BUILT_IMAGE_SUFFIX}"
+    _BUILT_IMAGE_SUFFIX: "libpod-5584367724527616"
+    FEDORA_CACHE_IMAGE_NAME: "fedora-31-${_BUILT_IMAGE_SUFFIX}"
+    PRIOR_FEDORA_CACHE_IMAGE_NAME: "fedora-30-${_BUILT_IMAGE_SUFFIX}"
+    #UBUNTU_CACHE_IMAGE_NAME: "ubuntu-19-${_BUILT_IMAGE_SUFFIX}"
+    #PRIOR_UBUNTU_CACHE_IMAGE_NAME: "ubuntu-18-${_BUILT_IMAGE_SUFFIX}"
+
+    # Must be defined true when testing w/in containers
+    CONTAINER: "false"
 
 
-gcp_credentials: ENCRYPTED[f8f7a2ccb294476c4696c0c16683b8639706066c27a8822b6ec18f9338bc55cae8fd28dcd2d8106038f105ba65e2faba]
+gcp_credentials: ENCRYPTED[5ad247acfd6cfca94554b973d61a98a7882dfafbfcc1deb5faee8634cb3f8cf29720c88c243586d2975dd40885279db6]
+
 
 
 # Default VM to use unless set or modified by task
@@ -28,31 +35,32 @@ gce_instance:
     disk: 200  # Required for performance reasons
     image_name: "${FEDORA_CACHE_IMAGE_NAME}"
 
-
 # Update metadata on VM images referenced by this repository state
 meta_task:
+    # see bors.toml
+    skip: $CIRRUS_BRANCH =~ ".*\.tmp"
 
     container:
-        image: "quay.io/libpod/imgts:latest"  # maintained in libpod repo
+        image: "quay.io/libpod/imgts:master"  # maintained in libpod repo
         cpu: 1
         memory: 1
 
     env:
+        CONTAINER: true
         # Space-separated list of images used by this repository state
         IMGNAMES: |-
             ${FEDORA_CACHE_IMAGE_NAME}
             ${PRIOR_FEDORA_CACHE_IMAGE_NAME}
-            ${UBUNTU_CACHE_IMAGE_NAME}
-            ${PRIOR_UBUNTU_CACHE_IMAGE_NAME}
+            #${UBUNTU_CACHE_IMAGE_NAME}
+            #${PRIOR_UBUNTU_CACHE_IMAGE_NAME}
         BUILDID: "${CIRRUS_BUILD_ID}"
         REPOREF: "${CIRRUS_CHANGE_IN_REPO}"
-        GCPJSON: ENCRYPTED[1dc9fd2c69dd84b1d1f32082bdfb1bc9e2564b4fa68d975c4fdbbbfeeb0da7901383b805ff0b3c9d88e62bebad388885]
-        GCPNAME: ENCRYPTED[7dffc00502b186a517b786af7606edb468042c0e46582d3f97975b0de7d8b72057e821729e1056754ecfd16df50bbd2a]
-        GCPPROJECT: ${IMAGE_PROJECT}
+        GCPJSON: ENCRYPTED[35f6dca7928a3b676c05e0e6a6ce7f4ca3d347803e23b8d5d57ea8a22973248e2808e8726b9463b00b57e576c5ff0331]
+        GCPNAME: ENCRYPTED[f3890da8c780aaa352ae8d1e3c9fedffd0a233625c1b983e6754e609a92d5c814167ee53ef967896d66c73710c90465e]
+        GCPPROJECT: ENCRYPTED[e82537cfb95d6121717be1f23078a18b14de224de82ed2f72c0a8f0adc77b5c7e8ad394d10714214bccb9f010d65ac29]
         CIRRUS_CLONE_DEPTH: 1  # source not used
 
     script: /usr/local/bin/entrypoint.sh
-
 
 validate_task:
 
