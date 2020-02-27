@@ -8,7 +8,7 @@ is removed from the network, it will remove the entry from the hosts file.  Each
 instance.
 
 The *dnsplugin* plugin was specifically designed for the [Podman](https://github.com/containers/libpod) container engine.
-Follow the [mini-tutorial](README_PODMAN.md) to use it with Podman.:w
+Follow the [mini-tutorial](README_PODMAN.md) to use it with Podman.
 
 
 ## Usage
