@@ -193,7 +193,7 @@ func cmdCheck(args *skel.CmdArgs) error {
 		return errors.Errorf("dnsmasq instance not running")
 	}
 	// Above will make sure the pidfile exists
-	files, err := ioutil.ReadDir(dnsNameConfPath)
+	files, err := ioutil.ReadDir(dnsNameConfPath())
 	if err != nil {
 		return err
 	}
