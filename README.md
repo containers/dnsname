@@ -35,8 +35,8 @@ The dnsname plugin can be enabled in the cni network configuration file.
 
 ## DNSMasq configuration files
 The dnsmasq service and its configuration files are considered to be very fluid and are not meant to survive a system
-reboot.  Therefore, files are stored in `/run/containers/cni/dnsname`. The plugin knows to recreate the necessary
-files if it detects they are not present.
+reboot.  Therefore, files are stored in `/run/containers/cni/dnsname`, or under `$XDG_RUNTIME_DIR/containers/cni/dnsname` if
+`XDG_RUNTIME_DIR` is specified.  The plugin knows to recreate the necessary files if it detects they are not present.
 
 ##  DNSMasq default configuration
 Much like the implementation of DNSMasq for libvirt, this plugin will only set up dnsmasq to listen on the network

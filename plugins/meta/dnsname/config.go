@@ -2,13 +2,13 @@ package main
 
 import (
 	"errors"
+	"os"
+	"path/filepath"
 
 	"github.com/containernetworking/cni/pkg/types"
 )
 
 const (
-	//	dnsNameConfPath is where we store the conf, pid, and hosts files
-	dnsNameConfPath = "/run/containers/cni/dnsname"
 	// confFileName is the name of the dns masq conf file
 	confFileName = "dnsmasq.conf"
 	// hostsFileName is the name of the addnhosts file
@@ -52,4 +52,13 @@ type dnsNameFile struct {
 	Domain           string
 	NetworkInterface string
 	PidFile          string
+}
+
+// dnsNameConfPath tells where we store the conf, pid, and hosts files
+func dnsNameConfPath() string {
+	xdgRuntimeDir := os.Getenv("XDG_RUNTIME_DIR")
+	if xdgRuntimeDir != "" {
+		return filepath.Join(xdgRuntimeDir, "containers/cni/dnsname")
+	}
+	return "/run/containers/cni/dnsname"
 }
