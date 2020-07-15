@@ -12,11 +12,11 @@ env:
     GOCACHE: "${HOME}/.cache/go-build"
 
     # VM Images are maintained in the libpod repo.
-    _BUILT_IMAGE_SUFFIX: "libpod-5874660151656448"
+    _BUILT_IMAGE_SUFFIX: "libpod-6508632441356288"
     FEDORA_CACHE_IMAGE_NAME: "fedora-31-${_BUILT_IMAGE_SUFFIX}"
     PRIOR_FEDORA_CACHE_IMAGE_NAME: "fedora-30-${_BUILT_IMAGE_SUFFIX}"
-    UBUNTU_CACHE_IMAGE_NAME: "ubuntu-19-${_BUILT_IMAGE_SUFFIX}"
-    PRIOR_UBUNTU_CACHE_IMAGE_NAME: "ubuntu-18-${_BUILT_IMAGE_SUFFIX}"
+    UBUNTU_CACHE_IMAGE_NAME: "ubuntu-20-${_BUILT_IMAGE_SUFFIX}"
+    PRIOR_UBUNTU_CACHE_IMAGE_NAME: "ubuntu-19-${_BUILT_IMAGE_SUFFIX}"
 
     # Must be defined true when testing w/in containers
     CONTAINER: "false"
