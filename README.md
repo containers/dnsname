@@ -7,7 +7,7 @@ the pod and its IP address are added to a network specific hosts file that dnsma
 is removed from the network, it will remove the entry from the hosts file.  Each CNI network will have its own dnsmasq
 instance.
 
-The *dnsplugin* plugin was specifically designed for the [Podman](https://github.com/containers/libpod) container engine.
+The *dnsname* plugin was specifically designed for the [Podman](https://github.com/containers/libpod) container engine.
 Follow the [mini-tutorial](README_PODMAN.md) to use it with Podman.
 
 
