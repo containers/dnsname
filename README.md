@@ -3,11 +3,11 @@
 ## Overview
 
 This plugin sets up the use of dnsmasq on a given CNI network so that Pods can resolve each other by name.  When configured,
-the pod and its IP address are added to a network specific hosts file that dnsmasq will read in.  Similarly, when a pod
+the pod and its IP address are added to a network specific hosts file that dnsmasq reads in.  Similarly, when a pod
 is removed from the network, it will remove the entry from the hosts file.  Each CNI network will have its own dnsmasq
 instance.
 
-The *dnsname* plugin was specifically designed for the [Podman](https://github.com/containers/libpod) container engine.
+The *dnsname* plugin was specifically designed for the [Podman](https://github.com/containers/podman) container engine.
 Follow the [mini-tutorial](README_PODMAN.md) to use it with Podman.
 
 
