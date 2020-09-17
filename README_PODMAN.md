@@ -6,7 +6,7 @@ CNI configuration.  The containers will only be able to resolve each other if th
 
 **Note**: This plugin does not work with rootless containers.
 
-This tutorial assumes you already have Podman, containernetwork-plugins, and a golang development environment installed.
+This tutorial assumes you already have Podman, containernetworking-plugins, and a golang development environment installed.
 
 ## Install dnsmasq
 
