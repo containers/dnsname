@@ -42,3 +42,8 @@ reboot.  Therefore, files are stored in `/run/containers/cni/dnsname`, or under 
 Much like the implementation of DNSMasq for libvirt, this plugin will only set up dnsmasq to listen on the network
 interfaces associated with the CNI network.  The DNSMasq services are not configured or managed by systemd but rather
 only by the plugin itself.
+
+## Reporting issues
+If you are using dnsname code compiled directly from github, then reporting bugs and problem to the dnsname github issues tracker
+is appropriate.  In the case that you are using code compiled and provided by a Linux distribution, you should file the problem
+with their appropriate bug tracker (bugzilla/trackpad).
