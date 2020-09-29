@@ -23,26 +23,34 @@ should already exist.
 ## Configure a CNI network for Podman
 
 1. Create a new network using `podman network create`.  For example, `podman network create foobar` will suffice.
-2. Using your favorite editor, edit `/etc/cni/net.d/foobar.conflist` and add the following with the plugins stanza:
-```
-      {
-     "type": "dnsname",
-         "domainName": "podman.io"
-      }
 
+The feature will be automatically enabled for newly created networks via podman network create. If you want to add this feature
+to an exisiting network add the needed lines to `/etc/cni/net.d/foobar.conflist` using your favorite editor.
 ```
-The following example [configuration file](example/cni-podman1.conflist) shows a usable example for Podman.
+{
+   "cniVersion": "0.4.0",
+   "name": "foobar",
+   "plugins": [
+      ...
+      {
+         "type": "dnsname",
+         "domainName": "dns.podman"
+      }
+   ]
+}
+```
 
 ## Example: container name resolution
+**Note**: we use the --network foobar here. Also, in this test image, the nginx server will respond with
+*podman rulez* on an http request.
 
-1. sudo podman run -dt --name web --network foobar quay.io/libpod/alpine_nginx:latest
-    5139d65d22135e9ecab511559d863754550894a32285befd94dab231017048c2
+```console
+foo@bar:~$ sudo podman run -dt --name web --network foobar quay.io/libpod/alpine_nginx:latest
+5139d65d22135e9ecab511559d863754550894a32285befd94dab231017048c2
 
-    Note: we use the --network foobar here. Also, in this test image, the nginx server will respond with
-    *podman rulez* on an http request.
-2. sudo podman run -it --name client --network cni-podman1 quay.io/libpod/alpine_nginx:latest curl http://web/
+foo@bar:~$ sudo podman run -it --name client --network foobar quay.io/libpod/alpine_nginx:latest curl http://web/
 podman rulez
-
+```
 
 ## Enabling name resolution on the default Podman network
 After making sure the *dnsplugin* is functioning properly, you can add name resolution to your default Podman
