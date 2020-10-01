@@ -45,10 +45,10 @@ to an exisiting network add the needed lines to `/etc/cni/net.d/foobar.conflist`
 *podman rulez* on an http request.
 
 ```console
-foo@bar:~$ sudo podman run -dt --name web --network foobar quay.io/libpod/alpine_nginx:latest
+sudo podman run -dt --name web --network foobar quay.io/libpod/alpine_nginx:latest
 5139d65d22135e9ecab511559d863754550894a32285befd94dab231017048c2
 
-foo@bar:~$ sudo podman run -it --name client --network foobar quay.io/libpod/alpine_nginx:latest curl http://web/
+sudo podman run -it --name client --network foobar quay.io/libpod/alpine_nginx:latest curl http://web/
 podman rulez
 ```
 
