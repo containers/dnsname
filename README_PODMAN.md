@@ -24,8 +24,8 @@ should already exist.
 
 1. Create a new network using `podman network create`.  For example, `podman network create foobar` will suffice.
 
-The feature will be automatically enabled for newly created networks via podman network create. If you want to add this feature
-to an exisiting network add the needed lines to `/etc/cni/net.d/foobar.conflist` using your favorite editor.
+2. (Optional) The configuration will be automatically enabled for newly created networks via `podman network create`. If you want to add this feature
+to an exisiting network, add the needed lines to `/etc/cni/net.d/foobar.conflist` using your favorite editor.
 ```
 {
    "cniVersion": "0.4.0",
@@ -41,8 +41,8 @@ to an exisiting network add the needed lines to `/etc/cni/net.d/foobar.conflist`
 ```
 
 ## Example: container name resolution
-**Note**: we use the --network foobar here. Also, in this test image, the nginx server will respond with
-*podman rulez* on an http request.
+In this test image, the nginx server will respond with *podman rulez* from the `curl` HTTP request.\
+**Note**: we use the --network foobar here.
 
 ```console
 sudo podman run -dt --name web --network foobar quay.io/libpod/alpine_nginx:latest
