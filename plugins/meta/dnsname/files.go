@@ -87,7 +87,7 @@ func generateDNSMasqConfig(config dnsNameFile) ([]byte, error) {
 }
 
 // appendToFile appends a new entry to the dnsmasqs hosts file
-func appendToFile(path, podname string, ips []*net.IPNet) error {
+func appendToFile(path, podname string, aliases []string, ips []*net.IPNet) error {
 	f, err := openFile(path)
 	if err != nil {
 		return err
@@ -98,7 +98,11 @@ func appendToFile(path, podname string, ips []*net.IPNet) error {
 		}
 	}()
 	for _, ip := range ips {
-		entry := fmt.Sprintf("%s\t%s\n", ip.IP.String(), podname)
+		entry := fmt.Sprintf("%s\t%s", ip.IP.String(), podname)
+		for _, alias := range aliases {
+			entry += fmt.Sprintf(" %s", alias)
+		}
+		entry += "\n"
 		if _, err = f.WriteString(entry); err != nil {
 			return err
 		}

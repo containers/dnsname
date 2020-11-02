@@ -57,7 +57,6 @@ func cmdAdd(args *skel.CmdArgs) error {
 	if err != nil {
 		return err
 	}
-
 	dnsNameConf, err := newDNSMasqFile(netConf.DomainName, result.Interfaces[0].Name, netConf.Name)
 	if err != nil {
 		return err
@@ -85,7 +84,8 @@ func cmdAdd(args *skel.CmdArgs) error {
 	if err := checkForDNSMasqConfFile(dnsNameConf); err != nil {
 		return err
 	}
-	if err := appendToFile(dnsNameConf.AddOnHostsFile, podname, ips); err != nil {
+	aliases := netConf.RuntimeConfig.Aliases[netConf.Name]
+	if err := appendToFile(dnsNameConf.AddOnHostsFile, podname, aliases, ips); err != nil {
 		return err
 	}
 	// Now we need to HUP
@@ -231,6 +231,7 @@ func parseConfig(stdin []byte, args string) (*DNSNameConf, *current.Result, stri
 	if err := json.Unmarshal(stdin, &conf); err != nil {
 		return nil, nil, "", errors.Wrap(err, "failed to parse network configuration")
 	}
+
 	// Parse previous result.
 	var result *current.Result
 	if conf.RawPrevResult != nil {
