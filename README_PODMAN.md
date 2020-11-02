@@ -23,14 +23,7 @@ should already exist.
 ## Configure a CNI network for Podman
 
 1. Create a new network using `podman network create`.  For example, `podman network create foobar` will suffice.
-2. Using your favorite editor, edit `/etc/cni/net.d/foobar.conflist` and add the following with the plugins stanza:
-```
-      {
-     "type": "dnsname",
-         "domainName": "podman.io"
-      }
 
-```
 The following example [configuration file](example/cni-podman1.conflist) shows a usable example for Podman.
 
 ## Example: container name resolution

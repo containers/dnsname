@@ -27,7 +27,10 @@ The dnsname plugin can be enabled in the cni network configuration file.
       },
       {
         "type": "dnsname",
-        "domainName": "foobar.com"
+        "domainName": "foobar.com",
+        "capabilities": {
+            "aliases": true
+        }
       }
     ]
 }
@@ -42,6 +45,10 @@ reboot.  Therefore, files are stored in `/run/containers/cni/dnsname`, or under 
 Much like the implementation of DNSMasq for libvirt, this plugin will only set up dnsmasq to listen on the network
 interfaces associated with the CNI network.  The DNSMasq services are not configured or managed by systemd but rather
 only by the plugin itself.
+
+## Network aliases
+The dnsname plugin is capable of not only adding the container name for DNS resolution but also adding network aliases. These
+aliases are also added to the DNSMasq host file.
 
 ## Reporting issues
 If you are using dnsname code compiled directly from github, then reporting bugs and problem to the dnsname github issues tracker

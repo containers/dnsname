@@ -41,7 +41,10 @@ var (
 // DNSNameConf represents the cni config with the domain name attribute
 type DNSNameConf struct {
 	types.NetConf
-	DomainName string `json:"domainName"`
+	DomainName    string   `json:"domainName"`
+	RuntimeConfig struct { // The capability arg
+		Aliases map[string][]string `json:"aliases"`
+	} `json:"runtimeConfig,omitempty"`
 }
 
 // dnsNameFile describes the plugin's attributes
