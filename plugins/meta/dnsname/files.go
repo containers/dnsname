@@ -100,7 +100,7 @@ func appendToFile(path, podname string, aliases []string, ips []*net.IPNet) erro
 	for _, ip := range ips {
 		entry := fmt.Sprintf("%s\t%s", ip.IP.String(), podname)
 		for _, alias := range aliases {
-			entry += fmt.Sprintf(" %s", alias)
+			entry += fmt.Sprintf("\t%s", alias)
 		}
 		entry += "\n"
 		if _, err = f.WriteString(entry); err != nil {
