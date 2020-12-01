@@ -12,7 +12,7 @@ github.com/containernetworking/plugins/pkg/testutils
 github.com/containernetworking/plugins/pkg/utils/buildversion
 github.com/containernetworking/plugins/plugins/ipam/host-local/backend
 github.com/containernetworking/plugins/plugins/ipam/host-local/backend/disk
-# github.com/coreos/go-iptables v0.4.2
+# github.com/coreos/go-iptables v0.4.5
 github.com/coreos/go-iptables/iptables
 # github.com/hpcloud/tail v1.0.0
 github.com/hpcloud/tail
