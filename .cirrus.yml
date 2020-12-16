@@ -11,19 +11,19 @@ env:
     HOME: "/root"  # not set by default
     GOCACHE: "${HOME}/.cache/go-build"
 
+    # Make names more readable in github/cirrus-ci
+    FEDORA_NAME: "fedora-33"
+    UBUNTU_NAME: "ubuntu-2010"
+
     # VM Images are maintained in the automation_images repo.
-    _BUILT_IMAGE_SUFFIX: "c6110627968057344"
+    _BUILT_IMAGE_SUFFIX: "c6233039174893568"
     FEDORA_CACHE_IMAGE_NAME: "fedora-${_BUILT_IMAGE_SUFFIX}"
-    PRIOR_FEDORA_CACHE_IMAGE_NAME: "prior-fedora-${_BUILT_IMAGE_SUFFIX}"
     UBUNTU_CACHE_IMAGE_NAME: "ubuntu-${_BUILT_IMAGE_SUFFIX}"
-    PRIOR_UBUNTU_CACHE_IMAGE_NAME: "prior-ubuntu-${_BUILT_IMAGE_SUFFIX}"
 
     # Must be defined true when testing w/in containers
     CONTAINER: "false"
 
-
 gcp_credentials: ENCRYPTED[5ad247acfd6cfca94554b973d61a98a7882dfafbfcc1deb5faee8634cb3f8cf29720c88c243586d2975dd40885279db6]
-
 
 
 # Default VM to use unless set or modified by task
@@ -35,13 +35,14 @@ gce_instance:
     disk: 200  # Required for performance reasons
     image_name: "${FEDORA_CACHE_IMAGE_NAME}"
 
+
 # Update metadata on VM images referenced by this repository state
 meta_task:
     # see bors.toml
     skip: $CIRRUS_BRANCH =~ ".*\.tmp"
 
     container:
-        image: "quay.io/libpod/imgts:master"  # maintained in libpod repo
+        image: "quay.io/libpod/imgts:${_BUILT_IMAGE_SUFFIX}"
         cpu: 1
         memory: 1
 
@@ -50,17 +51,16 @@ meta_task:
         # Space-separated list of images used by this repository state
         IMGNAMES: |-
             ${FEDORA_CACHE_IMAGE_NAME}
-            ${PRIOR_FEDORA_CACHE_IMAGE_NAME}
-            #${UBUNTU_CACHE_IMAGE_NAME}
-            ${PRIOR_UBUNTU_CACHE_IMAGE_NAME}
+            ${UBUNTU_CACHE_IMAGE_NAME}
         BUILDID: "${CIRRUS_BUILD_ID}"
-        REPOREF: "${CIRRUS_CHANGE_IN_REPO}"
+        REPOREF: "${CIRRUS_REPO_NAME}"
         GCPJSON: ENCRYPTED[35f6dca7928a3b676c05e0e6a6ce7f4ca3d347803e23b8d5d57ea8a22973248e2808e8726b9463b00b57e576c5ff0331]
         GCPNAME: ENCRYPTED[f3890da8c780aaa352ae8d1e3c9fedffd0a233625c1b983e6754e609a92d5c814167ee53ef967896d66c73710c90465e]
         GCPPROJECT: ENCRYPTED[e82537cfb95d6121717be1f23078a18b14de224de82ed2f72c0a8f0adc77b5c7e8ad394d10714214bccb9f010d65ac29]
         CIRRUS_CLONE_DEPTH: 1  # source not used
 
     script: /usr/local/bin/entrypoint.sh
+
 
 validate_task:
 
@@ -73,14 +73,20 @@ validate_task:
       - ./hack/tree_status.sh
       - make
 
+
 test_task:
+    alias: test
 
     depends_on:
         - validate
-    gce_instance:
-        matrix:
+
+    matrix:
+        - name: $FEDORA_NAME
+          gce_instance:
             image_name: ${FEDORA_CACHE_IMAGE_NAME}
-            image_name: ${PRIOR_UBUNTU_CACHE_IMAGE_NAME}
+        - name: $UBUNTU_NAME
+          gce_instance:
+            image_name: ${UBUNTU_CACHE_IMAGE_NAME}
 
     env:
         PATH: "$PATH:/var/tmp/go/bin"
