@@ -38,7 +38,7 @@ lines to `/etc/cni/net.d/foobar.conflist` using your favorite editor. For exampl
       ...
       {
          "type": "dnsname",
-         "domainName": "dns.podman"
+         "domainName": "dns.podman",
          "capabilities": {
             "aliases": true
          }
