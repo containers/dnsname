@@ -13,6 +13,23 @@ This tutorial assumes you already have Podman, containernetworking-plugins, and 
 Using your package manager, install the *dnsmasq* package.  For Fedora, this would be:
 `sudo dnf install dnsmasq`
 
+### AppArmor
+
+If your system uses AppArmor, it can prevent dnsmasq to open the necessary files. To fix this, add the following lines to `/etc/apparmor.d/local/usr.sbin.dnsmasq`:
+
+```
+# required by the dnsname plugin in podman
+/run/containers/cni/dnsname/*/dnsmasq.conf r,
+/run/containers/cni/dnsname/*/addnhosts r,
+/run/containers/cni/dnsname/*/pidfile rw,
+```
+
+Then reload the main dnsmasq profile:
+
+```
+sudo apparmor_parser -R /etc/apparmor.d/usr.sbin.dnsmasq
+sudo apparmor_parser /etc/apparmor.d/usr.sbin.dnsmasq
+```
 
 ## Build and install
 
