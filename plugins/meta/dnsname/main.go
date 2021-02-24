@@ -99,6 +99,8 @@ func cmdAdd(args *skel.CmdArgs) error {
 	// keep anything that was passed in already
 	nameservers = append(nameservers, result.DNS.Nameservers...)
 	result.DNS.Nameservers = nameservers
+	// add dns search domain
+	result.DNS.Search = append(result.DNS.Search, netConf.DomainName)
 	// Pass through the previous result
 	return types.PrintResult(result, netConf.CNIVersion)
 }
