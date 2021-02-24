@@ -110,8 +110,11 @@ var _ = Describe("dnsname tests", func() {
 			})
 			Expect(err).NotTo(HaveOccurred())
 
-			_, err = current.GetResult(r)
+			result, err := current.GetResult(r)
 			Expect(err).NotTo(HaveOccurred())
+
+			// check that the dns search domain is set correctly
+			Expect(result.DNS.Search).To(Equal([]string{"foobar.io"}))
 
 			// Check that all configuration files are created
 			files, err := ioutil.ReadDir("/run/containers/cni/dnsname/test")
