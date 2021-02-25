@@ -4,8 +4,6 @@ The *dnsname* plugin allows containers to resolve each other by name.  The plugi
 container's name to an instance of a dnsmasq server.  The plugin is enabled through adding it to a network's
 CNI configuration.  The containers will only be able to resolve each other if they are on the same CNI network.
 
-**Note**: This plugin does not work with rootless containers.
-
 This tutorial assumes you already have Podman, containernetworking-plugins, and a golang development environment installed.
 
 ## Install dnsmasq
@@ -84,6 +82,3 @@ network.  This can be done two different ways:
 
 1. Add the *dnsname* plugin as described in above to your default Podman network.  This default network is
 usually `/etc/cni/net.d/87-podman-bridge.conflist`.
-
-2. Add a new network as described above and then edit `/etc/containers/libpod.conf` and change the
-`cni_default_network` key to your network name.
