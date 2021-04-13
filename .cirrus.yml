@@ -3,9 +3,8 @@
 env:
     DEST_BRANCH: "master"
     GOPATH: "/var/tmp/go"
-    CIRRUS_WORKING_DIR: "${GOPATH}/src/github.com/containers/oci-seccomp-bpf-hook"
+    CIRRUS_WORKING_DIR: "${GOPATH}/src/github.com/containers/dnsname"
     GOSRC: "$CIRRUS_WORKING_DIR"
-    SCRIPT_BASE: "./contrib/cirrus"
     CIRRUS_SHELL: "/bin/bash"
     IMAGE_PROJECT: "libpod-218412"
     HOME: "/root"  # not set by default
@@ -64,10 +63,8 @@ meta_task:
 
 validate_task:
 
-    env:
-        PATH: "$PATH:/var/tmp/go/bin"
-
     validate_script:
+      - export PATH="$PATH:$GOPATH/bin"
       - make validate
       - make vendor
       - ./hack/tree_status.sh
@@ -88,9 +85,7 @@ test_task:
           gce_instance:
             image_name: ${UBUNTU_CACHE_IMAGE_NAME}
 
-    env:
-        PATH: "$PATH:/var/tmp/go/bin"
-
     test_script:
+        - export PATH="$PATH:$GOPATH/bin"
         - make
         - make test
