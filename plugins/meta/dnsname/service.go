@@ -66,7 +66,10 @@ func (d dnsNameFile) start() error {
 		fmt.Sprintf("--conf-file=%s", d.ConfigFile),
 	}
 	cmd := exec.Command(d.Binary, args...)
-	return cmd.Run()
+	if b, err := cmd.CombinedOutput(); err != nil {
+		return errors.Wrapf(err, "dnsname error: dnsmasq failed with %q", b)
+	}
+	return nil
 }
 
 // stop stops the dnsmasq instance.
