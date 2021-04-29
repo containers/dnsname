@@ -11,11 +11,11 @@ env:
     GOCACHE: "${HOME}/.cache/go-build"
 
     # Make names more readable in github/cirrus-ci
-    FEDORA_NAME: "fedora-34beta"
-    UBUNTU_NAME: "ubuntu-2010"
+    FEDORA_NAME: "fedora-34"
+    UBUNTU_NAME: "ubuntu-2104"
 
     # VM Images are maintained in the automation_images repo.
-    _BUILT_IMAGE_SUFFIX: "c5032481331085312"
+    _BUILT_IMAGE_SUFFIX: "c6032583541653504"
     FEDORA_CACHE_IMAGE_NAME: "fedora-${_BUILT_IMAGE_SUFFIX}"
     UBUNTU_CACHE_IMAGE_NAME: "ubuntu-${_BUILT_IMAGE_SUFFIX}"
 
