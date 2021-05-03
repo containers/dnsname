@@ -140,7 +140,12 @@ func cmdDel(args *skel.CmdArgs) error {
 	if !shouldHUP {
 		// if there are no hosts, we should just stop the dnsmasq instance to not take
 		// system resources
-		return dnsNameConf.stop()
+		err = dnsNameConf.stop()
+		if err != nil {
+			return err
+		}
+		// remove the config directory
+		return os.RemoveAll(domainBaseDir)
 	}
 	// Now we need to HUP
 	return dnsNameConf.hup()

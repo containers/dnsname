@@ -197,8 +197,14 @@ var _ = Describe("dnsname tests", func() {
 
 			Expect(dnsDead).To(BeTrue())
 
-			// Cleanup behind ourselves
-			Expect(cleanup(d)).To(BeNil())
+			// defer cleanup is case it does not work automatically
+			defer func() {
+				_ = cleanup(d)
+			}()
+
+			// Check that the configuration directory is deleted
+			_, err = ioutil.ReadDir("/run/containers/cni/dnsname/test")
+			Expect(os.IsNotExist(err)).To(BeTrue())
 			return nil
 		})
 		Expect(err).NotTo(HaveOccurred())
