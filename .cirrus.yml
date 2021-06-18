@@ -1,7 +1,6 @@
 ---
 
 env:
-    DEST_BRANCH: "master"
     GOPATH: "/var/tmp/go"
     CIRRUS_WORKING_DIR: "${GOPATH}/src/github.com/containers/dnsname"
     GOSRC: "$CIRRUS_WORKING_DIR"
