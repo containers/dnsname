@@ -6,12 +6,17 @@ DESTDIR ?=
 LIBEXECDIR ?= ${PREFIX}/libexec/cni
 PREFIX ?= /usr/local
 
-
+PROJECT := github.com/containers/dnsname
 FIRST_GOPATH := $(firstword $(subst :, ,$(GOPATH)))
 GOPKGDIR := $(FIRST_GOPATH)/src/$(PROJECT)
 GOPKGBASEDIR ?= $(shell dirname "$(GOPKGDIR)")
 
 SELINUXOPT ?= $(shell test -x /usr/sbin/selinuxenabled && selinuxenabled && echo -Z)
+
+COMMIT_NO ?= $(shell git rev-parse HEAD 2> /dev/null || true)
+GIT_COMMIT ?= $(if $(shell git status --porcelain --untracked-files=no),${COMMIT_NO}-dirty,${COMMIT_NO})
+
+LDFLAGS ?= -X main.gitCommit=$(GIT_COMMIT)
 
 GO_BUILD=$(GO) build
 # Go module support: set `-mod=vendor` to use the vendored sources
@@ -34,7 +39,7 @@ gofmt:
 
 
 binaries:
-	$(GO_BUILD) -o bin/dnsname github.com/containers/dnsname/plugins/meta/dnsname
+	$(GO_BUILD) -ldflags '$(LDFLAGS)' -o bin/dnsname github.com/containers/dnsname/plugins/meta/dnsname
 
 .PHONY: .gitvalidation
 .gitvalidation:
