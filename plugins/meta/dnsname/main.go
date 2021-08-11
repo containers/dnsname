@@ -104,27 +104,34 @@ func cmdAdd(args *skel.CmdArgs) error {
 	return types.PrintResult(result, netConf.CNIVersion)
 }
 
+// Do not return an error, otherwise cni will stop
+// and not invoke the following plugins del command.
 func cmdDel(args *skel.CmdArgs) error {
 	if err := findDNSMasq(); err != nil {
-		return ErrBinaryNotFound
+		logrus.Error(ErrBinaryNotFound)
+		return nil
 	}
 	netConf, result, podname, err := parseConfig(args.StdinData, args.Args)
 	if err != nil {
-		return errors.Wrap(err, "failed to parse config")
+		logrus.Error(errors.Wrap(err, "failed to parse config"))
+		return nil
 	} else if result == nil {
 		return nil
 	}
 	dnsNameConf, err := newDNSMasqFile(netConf.DomainName, result.Interfaces[0].Name, netConf.Name)
 	if err != nil {
-		return err
+		logrus.Error(err)
+		return nil
 	}
 	domainBaseDir := filepath.Dir(dnsNameConf.PidFile)
 	lock, err := getLock(domainBaseDir)
 	if err != nil {
-		return err
+		logrus.Error(err)
+		return nil
 	}
 	if err := lock.acquire(); err != nil {
-		return err
+		logrus.Error(err)
+		return nil
 	}
 	defer func() {
 		// if the lock isn't given up by another process
@@ -134,20 +141,30 @@ func cmdDel(args *skel.CmdArgs) error {
 	}()
 	shouldHUP, err := removeFromFile(filepath.Join(domainBaseDir, hostsFileName), podname)
 	if err != nil {
-		return err
+		logrus.Error(err)
+		return nil
 	}
 	if !shouldHUP {
 		// if there are no hosts, we should just stop the dnsmasq instance to not take
 		// system resources
 		err = dnsNameConf.stop()
 		if err != nil {
-			return err
+			logrus.Error(err)
+			return nil
 		}
 		// remove the config directory
-		return os.RemoveAll(domainBaseDir)
+		err = os.RemoveAll(domainBaseDir)
+		if err != nil {
+			logrus.Error(err)
+		}
+		return nil
 	}
 	// Now we need to HUP
-	return dnsNameConf.hup()
+	err = dnsNameConf.hup()
+	if err != nil {
+		logrus.Error(err)
+	}
+	return nil
 }
 
 func main() {
