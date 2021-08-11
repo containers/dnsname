@@ -37,7 +37,6 @@ import (
 	"github.com/containernetworking/cni/pkg/types"
 	"github.com/containernetworking/cni/pkg/types/current"
 	"github.com/containernetworking/cni/pkg/version"
-	bv "github.com/containernetworking/plugins/pkg/utils/buildversion"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
@@ -152,7 +151,7 @@ func cmdDel(args *skel.CmdArgs) error {
 }
 
 func main() {
-	skel.PluginMain(cmdAdd, cmdCheck, cmdDel, version.All, bv.BuildString("dnsname"))
+	skel.PluginMain(cmdAdd, cmdCheck, cmdDel, version.All, getVersion())
 }
 
 func cmdCheck(args *skel.CmdArgs) error {
