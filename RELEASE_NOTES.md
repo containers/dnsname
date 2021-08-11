@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.3.0
+- Fixed a bug where errors when removing a container from `dnsname` could cause CNI to fail to clean up iptables rules for the container.
+- Fixed a bug where `dnsname` would never remove unused configuration files for networks that no longer had containers present.
+- If errors occur when running `dnsmasq`, the full error message is now displayed for debugging.
+- The version number of `dnsname` is now displayed correctly.
+
 ## 1.2.0
 - DNS Search domains required to use the `dnsname` plugin are now returned in the CNI response.
 
