@@ -16,7 +16,7 @@ SELINUXOPT ?= $(shell test -x /usr/sbin/selinuxenabled && selinuxenabled && echo
 COMMIT_NO ?= $(shell git rev-parse HEAD 2> /dev/null || true)
 GIT_COMMIT ?= $(if $(shell git status --porcelain --untracked-files=no),${COMMIT_NO}-dirty,${COMMIT_NO})
 
-LDFLAGS ?= -X main.gitCommit=$(GIT_COMMIT)
+LDFLAGS_DNSNAME ?= -X main.gitCommit=$(GIT_COMMIT)
 
 GO_BUILD=$(GO) build
 # Go module support: set `-mod=vendor` to use the vendored sources
@@ -39,7 +39,7 @@ gofmt:
 
 
 binaries:
-	$(GO_BUILD) -ldflags '$(LDFLAGS)' -o bin/dnsname github.com/containers/dnsname/plugins/meta/dnsname
+	$(GO_BUILD) -ldflags '$(LDFLAGS_DNSNAME)' -o bin/dnsname github.com/containers/dnsname/plugins/meta/dnsname
 
 .PHONY: .gitvalidation
 .gitvalidation:
