@@ -5,7 +5,7 @@ import "fmt"
 // overwritten at build time
 var gitCommit = "unknown"
 
-const dnsnameVersion = "1.3.1"
+const dnsnameVersion = "1.4.0-dev"
 
 func getVersion() string {
 	return fmt.Sprintf(`CNI dnsname plugin
