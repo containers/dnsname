@@ -1,15 +1,15 @@
 module github.com/containers/dnsname
 
-go 1.12
+go 1.13
 
 require (
-	github.com/containernetworking/cni v0.7.1
-	github.com/containernetworking/plugins v0.8.2
-	github.com/coreos/go-iptables v0.4.5
-	github.com/onsi/ginkgo v1.10.1
-	github.com/onsi/gomega v1.7.0
-	github.com/pkg/errors v0.8.1
-	github.com/sirupsen/logrus v1.4.2
-	github.com/vishvananda/netlink v1.0.0
-	golang.org/x/sys v0.0.0-20190916202348-b4ddaad3f8a3
+	github.com/containernetworking/cni v1.0.1
+	github.com/containernetworking/plugins v0.8.7
+	github.com/coreos/go-iptables v0.6.0
+	github.com/onsi/ginkgo v1.16.4
+	github.com/onsi/gomega v1.16.0
+	github.com/pkg/errors v0.9.1
+	github.com/sirupsen/logrus v1.8.1
+	github.com/vishvananda/netlink v1.1.1-0.20210916161339-2c39f3491956
+	golang.org/x/sys v0.0.0-20210915083310-ed5796bab164
 )
