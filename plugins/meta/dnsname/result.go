@@ -3,7 +3,7 @@ package main
 import (
 	"net"
 
-	"github.com/containernetworking/cni/pkg/types/current"
+	current "github.com/containernetworking/cni/pkg/types/100"
 	"github.com/pkg/errors"
 )
 
