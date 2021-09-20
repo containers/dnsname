@@ -25,8 +25,7 @@ If your system uses AppArmor, it can prevent dnsmasq to open the necessary files
 Then reload the main dnsmasq profile:
 
 ```
-sudo apparmor_parser -R /etc/apparmor.d/usr.sbin.dnsmasq
-sudo apparmor_parser /etc/apparmor.d/usr.sbin.dnsmasq
+sudo apparmor_parser -r /etc/apparmor.d/usr.sbin.dnsmasq
 ```
 
 ## Build and install
