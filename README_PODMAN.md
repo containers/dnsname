@@ -31,7 +31,8 @@ sudo apparmor_parser -r /etc/apparmor.d/usr.sbin.dnsmasq
 ## Build and install
 
 1. using git, clone the *github.com/containers/dnsname* repository.
-2. make install PREFIX=/usr -- this will install the dnsname plugin into /usr/libexec/cni where
+2. make binaries -- this will generate the binary file of the project into ./bin
+3. make install PREFIX=/usr -- this will install the dnsname plugin into /usr/libexec/cni where
 your CNI plugins should already exist.
 
 ## Configure a CNI network for Podman
@@ -77,7 +78,5 @@ podman rulez
 
 ## Enabling name resolution on the default Podman network
 After making sure the *dnsplugin* is functioning properly, you can add name resolution to your default Podman
-network.  This can be done two different ways:
-
-1. Add the *dnsname* plugin as described in above to your default Podman network.  This default network is
+network. To do so add the *dnsname* plugin as described in above to your default Podman network. This default network is
 usually `/etc/cni/net.d/87-podman-bridge.conflist`.
