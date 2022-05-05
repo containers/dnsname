@@ -49,7 +49,7 @@ binaries:
 install.tools: .install.gitvalidation .install.ginkgo .install.golangci-lint
 
 lint: .install.golangci-lint
-	$(GOBIN)/golangci-lint run
+	./bin/golangci-lint run
 
 define go-get
 	env GO111MODULE=off \
@@ -67,8 +67,8 @@ endef
 	fi
 
 .install.golangci-lint:
-	if [ ! -x "$(GOBIN)/golangci-lint" ]; then \
-		curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(GOBIN)/ v1.23.6; \
+	if [ ! -x "./bin/golangci-lint" ]; then \
+		curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.45.2 ; \
 	fi
 
 install:
