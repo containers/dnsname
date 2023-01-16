@@ -10,11 +10,11 @@ env:
     GOCACHE: "${GOPATH}/cache"
 
     # Make names more readable in github/cirrus-ci
-    FEDORA_NAME: "fedora-36"
+    FEDORA_NAME: "fedora-37"
     UBUNTU_NAME: "ubuntu-2110"
 
     # VM Images are maintained in the automation_images repo.
-    IMAGE_SUFFIX: "c4955393725038592"
+    IMAGE_SUFFIX: "c4987131005763584"
     FEDORA_CACHE_IMAGE_NAME: "fedora-${IMAGE_SUFFIX}"
     UBUNTU_CACHE_IMAGE_NAME: "ubuntu-${IMAGE_SUFFIX}"
 
