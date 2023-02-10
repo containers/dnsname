@@ -152,8 +152,8 @@ func cmdDel(args *skel.CmdArgs) error {
 			logrus.Error(err)
 			return nil
 		}
-		// remove the config directory
-		err = os.RemoveAll(domainBaseDir)
+		// remove the config file
+		err = os.Remove(dnsNameConf.ConfigFile)
 		if err != nil {
 			logrus.Error(err)
 		}

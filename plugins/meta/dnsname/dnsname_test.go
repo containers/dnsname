@@ -204,6 +204,8 @@ var _ = Describe("dnsname tests", func() {
 
 			// Check that the configuration directory is deleted
 			_, err = ioutil.ReadDir("/run/containers/cni/dnsname/test")
+			Expect(err).NotTo(HaveOccurred())
+			_, err = ioutil.ReadFile("/run/containers/cni/dnsname/test/dnsmasq.conf")
 			Expect(os.IsNotExist(err)).To(BeTrue())
 			return nil
 		})
