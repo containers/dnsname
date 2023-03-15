@@ -10,13 +10,13 @@ env:
     GOCACHE: "${GOPATH}/cache"
 
     # Make names more readable in github/cirrus-ci
-    FEDORA_NAME: "fedora-36"
-    UBUNTU_NAME: "ubuntu-2110"
+    FEDORA_NAME: "fedora-37"
+    DEBIAN_NAME: "debian-12"
 
     # VM Images are maintained in the automation_images repo.
-    IMAGE_SUFFIX: "c4955393725038592"
+    IMAGE_SUFFIX: "c20230307t192532z-f37f36d12"
     FEDORA_CACHE_IMAGE_NAME: "fedora-${IMAGE_SUFFIX}"
-    UBUNTU_CACHE_IMAGE_NAME: "ubuntu-${IMAGE_SUFFIX}"
+    DEBIAN_CACHE_IMAGE_NAME: "debian-${IMAGE_SUFFIX}"
 
     # Must be defined true when testing w/in containers
     CONTAINER: "false"
@@ -49,7 +49,7 @@ meta_task:
         # Space-separated list of images used by this repository state
         IMGNAMES: |-
             ${FEDORA_CACHE_IMAGE_NAME}
-            ${UBUNTU_CACHE_IMAGE_NAME}
+            ${DEBIAN_CACHE_IMAGE_NAME}
         BUILDID: "${CIRRUS_BUILD_ID}"
         REPOREF: "${CIRRUS_REPO_NAME}"
         GCPJSON: ENCRYPTED[35f6dca7928a3b676c05e0e6a6ce7f4ca3d347803e23b8d5d57ea8a22973248e2808e8726b9463b00b57e576c5ff0331]
@@ -80,9 +80,9 @@ test_task:
         - name: $FEDORA_NAME
           gce_instance:
             image_name: ${FEDORA_CACHE_IMAGE_NAME}
-        - name: $UBUNTU_NAME
+        - name: $DEBIAN_NAME
           gce_instance:
-            image_name: ${UBUNTU_CACHE_IMAGE_NAME}
+            image_name: ${DEBIAN_CACHE_IMAGE_NAME}
 
     test_script:
         - export PATH="$PATH:$GOPATH/bin"
