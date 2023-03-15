@@ -68,7 +68,7 @@ endef
 
 .install.golangci-lint:
 	if [ ! -x "./bin/golangci-lint" ]; then \
-		curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.45.2 ; \
+		curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.51.1 ; \
 	fi
 
 install:
