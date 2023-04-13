@@ -4,7 +4,7 @@ go 1.13
 
 require (
 	github.com/containernetworking/cni v1.1.2
-	github.com/containernetworking/plugins v0.8.7
+	github.com/containernetworking/plugins v0.9.1
 	github.com/coreos/go-iptables v0.6.0
 	github.com/onsi/ginkgo v1.16.5
 	github.com/onsi/gomega v1.17.0
