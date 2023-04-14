@@ -30,9 +30,20 @@ sudo apparmor_parser -r /etc/apparmor.d/usr.sbin.dnsmasq
 
 ## Build and install
 
-1. using git, clone the *github.com/containers/dnsname* repository.
-2. make install PREFIX=/usr -- this will install the dnsname plugin into /usr/libexec/cni where
-your CNI plugins should already exist.
+1. Clone this repository.
+    ```
+    git clone https://github.com/containers/dnsname.git
+    ```
+2. Build the `dnsname` binary.
+    ```
+    cd dnsname
+    make
+    ```
+3. Install the plugin into the proper `PREFIX` directory (check `podman network ls`) -- this will install the dnsname plugin into /usr/libexec/cni where
+your CNI plugins should already exist
+    ```
+    make install PREFIX=/usr
+    ```
 
 ## Configure a CNI network for Podman
 
