@@ -2,13 +2,11 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// +build darwin dragonfly freebsd linux netbsd openbsd
+// +build darwin dragonfly freebsd linux netbsd openbsd solaris
 
 package filemutex
 
-import (
-	"syscall"
-)
+import "golang.org/x/sys/unix"
 
 const (
 	mkdirPerm = 0750
@@ -21,7 +19,7 @@ type FileMutex struct {
 }
 
 func New(filename string) (*FileMutex, error) {
-	fd, err := syscall.Open(filename, syscall.O_CREAT|syscall.O_RDONLY, mkdirPerm)
+	fd, err := unix.Open(filename, unix.O_CREAT|unix.O_RDONLY, mkdirPerm)
 	if err != nil {
 		return nil, err
 	}
@@ -29,39 +27,37 @@ func New(filename string) (*FileMutex, error) {
 }
 
 func (m *FileMutex) Lock() error {
-	if err := syscall.Flock(m.fd, syscall.LOCK_EX); err != nil {
+	return unix.Flock(m.fd, unix.LOCK_EX)
+}
+
+func (m *FileMutex) TryLock() error {
+	if err := unix.Flock(m.fd, unix.LOCK_EX|unix.LOCK_NB); err != nil {
+		if errno, ok := err.(unix.Errno); ok {
+			if errno == unix.EWOULDBLOCK {
+				return AlreadyLocked
+			}
+		}
 		return err
 	}
 	return nil
 }
 
 func (m *FileMutex) Unlock() error {
-	if err := syscall.Flock(m.fd, syscall.LOCK_UN); err != nil {
-		return err
-	}
-	return nil
+	return unix.Flock(m.fd, unix.LOCK_UN)
 }
 
 func (m *FileMutex) RLock() error {
-	if err := syscall.Flock(m.fd, syscall.LOCK_SH); err != nil {
-		return err
-	}
-	return nil
+	return unix.Flock(m.fd, unix.LOCK_SH)
 }
 
 func (m *FileMutex) RUnlock() error {
-	if err := syscall.Flock(m.fd, syscall.LOCK_UN); err != nil {
-		return err
-	}
-	return nil
+	return unix.Flock(m.fd, unix.LOCK_UN)
 }
 
-// Close does an Unlock() combined with closing and unlinking the associated
-// lock file. You should create a New() FileMutex for every Lock() attempt if
-// using Close().
+// Close unlocks the lock and closes the underlying file descriptor.
 func (m *FileMutex) Close() error {
-	if err := syscall.Flock(m.fd, syscall.LOCK_UN); err != nil {
+	if err := unix.Flock(m.fd, unix.LOCK_UN); err != nil {
 		return err
 	}
-	return syscall.Close(m.fd)
+	return unix.Close(m.fd)
 }

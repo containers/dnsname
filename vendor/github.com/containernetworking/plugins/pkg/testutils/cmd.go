@@ -15,7 +15,7 @@
 package testutils
 
 import (
-	"io/ioutil"
+	"io"
 	"os"
 
 	"github.com/containernetworking/cni/pkg/skel"
@@ -52,7 +52,7 @@ func CmdAdd(cniNetns, cniContainerID, cniIfname string, conf []byte, f func() er
 
 	var out []byte
 	if err == nil {
-		out, err = ioutil.ReadAll(r)
+		out, err = io.ReadAll(r)
 	}
 	os.Stdout = oldStdout
 
@@ -81,7 +81,7 @@ func CmdAddWithArgs(args *skel.CmdArgs, f func() error) (types.Result, []byte, e
 	return CmdAdd(args.Netns, args.ContainerID, args.IfName, args.StdinData, f)
 }
 
-func CmdCheck(cniNetns, cniContainerID, cniIfname string, conf []byte, f func() error) error {
+func CmdCheck(cniNetns, cniContainerID, cniIfname string, f func() error) error {
 	os.Setenv("CNI_COMMAND", "CHECK")
 	os.Setenv("CNI_PATH", os.Getenv("PATH"))
 	os.Setenv("CNI_NETNS", cniNetns)
@@ -93,7 +93,7 @@ func CmdCheck(cniNetns, cniContainerID, cniIfname string, conf []byte, f func() 
 }
 
 func CmdCheckWithArgs(args *skel.CmdArgs, f func() error) error {
-	return CmdCheck(args.Netns, args.ContainerID, args.IfName, args.StdinData, f)
+	return CmdCheck(args.Netns, args.ContainerID, args.IfName, f)
 }
 
 func CmdDel(cniNetns, cniContainerID, cniIfname string, f func() error) error {
