@@ -15,7 +15,7 @@ github.com/containernetworking/plugins/pkg/ns
 github.com/containernetworking/plugins/pkg/testutils
 github.com/containernetworking/plugins/plugins/ipam/host-local/backend
 github.com/containernetworking/plugins/plugins/ipam/host-local/backend/disk
-# github.com/coreos/go-iptables v0.6.0
+# github.com/coreos/go-iptables v0.7.0
 github.com/coreos/go-iptables/iptables
 # github.com/fsnotify/fsnotify v1.4.9
 github.com/fsnotify/fsnotify
