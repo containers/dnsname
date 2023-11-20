@@ -19,6 +19,7 @@ bind-dynamic
 no-hosts
 interface=cni0
 addn-hosts=/run/containers/cni/dnsname/cni0/addnhosts
+conf-dir=/run/containers/cni/dnsname/cni0/dnsmasq.d
 `
 
 	testConfig := dnsNameFile{
@@ -28,6 +29,7 @@ addn-hosts=/run/containers/cni/dnsname/cni0/addnhosts
 		Domain:           "foobar.org",
 		NetworkInterface: "cni0",
 		PidFile:          makePath("cni0", pidFileName),
+		ExtraConfDir:     makePath("cni0", extraConfDir),
 	}
 	type args struct {
 		config dnsNameFile

@@ -27,6 +27,7 @@ func newDNSMasqFile(domainName, networkInterface, networkName string) (dnsNameFi
 		NetworkInterface: networkInterface,
 		AddOnHostsFile:   makePath(networkName, hostsFileName),
 		Binary:           dnsMasqBinary,
+		ExtraConfDir:     makePath(networkName, extraConfDir),
 	}
 	return masqConf, nil
 }
