@@ -172,55 +172,11 @@ func SocketGet(local, remote net.Addr) (*Socket, error) {
 	return sock, nil
 }
 
-// SocketDiagTCPInfo requests INET_DIAG_INFO for TCP protocol for specified family type and return with extension TCP info.
+// SocketDiagTCPInfo requests INET_DIAG_INFO for TCP protocol for specified family type.
 func SocketDiagTCPInfo(family uint8) ([]*InetDiagTCPInfoResp, error) {
-	var result []*InetDiagTCPInfoResp
-	err := socketDiagTCPExecutor(family, func(m syscall.NetlinkMessage) error {
-		sockInfo := &Socket{}
-		if err := sockInfo.deserialize(m.Data); err != nil {
-			return err
-		}
-		attrs, err := nl.ParseRouteAttr(m.Data[sizeofSocket:])
-		if err != nil {
-			return err
-		}
-
-		res, err := attrsToInetDiagTCPInfoResp(attrs, sockInfo)
-		if err != nil {
-			return err
-		}
-
-		result = append(result, res)
-		return nil
-	})
-	if err != nil {
-		return nil, err
-	}
-	return result, nil
-}
-
-// SocketDiagTCP requests INET_DIAG_INFO for TCP protocol for specified family type and return related socket.
-func SocketDiagTCP(family uint8) ([]*Socket, error) {
-	var result []*Socket
-	err := socketDiagTCPExecutor(family, func(m syscall.NetlinkMessage) error {
-		sockInfo := &Socket{}
-		if err := sockInfo.deserialize(m.Data); err != nil {
-			return err
-		}
-		result = append(result, sockInfo)
-		return nil
-	})
-	if err != nil {
-		return nil, err
-	}
-	return result, nil
-}
-
-// socketDiagTCPExecutor requests INET_DIAG_INFO for TCP protocol for specified family type.
-func socketDiagTCPExecutor(family uint8, receiver func(syscall.NetlinkMessage) error) error {
 	s, err := nl.Subscribe(unix.NETLINK_INET_DIAG)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	defer s.Close()
 
@@ -228,22 +184,23 @@ func socketDiagTCPExecutor(family uint8, receiver func(syscall.NetlinkMessage) e
 	req.AddData(&socketRequest{
 		Family:   family,
 		Protocol: unix.IPPROTO_TCP,
-		Ext:      (1 << (INET_DIAG_VEGASINFO - 1)) | (1 << (INET_DIAG_INFO - 1)),
+		Ext:      INET_DIAG_INFO,
 		States:   uint32(0xfff), // All TCP states
 	})
 	s.Send(req)
 
+	var result []*InetDiagTCPInfoResp
 loop:
 	for {
 		msgs, from, err := s.Receive()
 		if err != nil {
-			return err
+			return nil, err
 		}
 		if from.Pid != nl.PidKernel {
-			return fmt.Errorf("Wrong sender portid %d, expected %d", from.Pid, nl.PidKernel)
+			return nil, fmt.Errorf("Wrong sender portid %d, expected %d", from.Pid, nl.PidKernel)
 		}
 		if len(msgs) == 0 {
-			return errors.New("no message nor error from netlink")
+			return nil, errors.New("no message nor error from netlink")
 		}
 
 		for _, m := range msgs {
@@ -251,41 +208,31 @@ loop:
 			case unix.NLMSG_DONE:
 				break loop
 			case unix.NLMSG_ERROR:
+				native := nl.NativeEndian()
 				error := int32(native.Uint32(m.Data[0:4]))
-				return syscall.Errno(-error)
+				return nil, syscall.Errno(-error)
 			}
-			if err := receiver(m); err != nil {
-				return err
-			}
-		}
-	}
-	return nil
-}
-
-func attrsToInetDiagTCPInfoResp(attrs []syscall.NetlinkRouteAttr, sockInfo *Socket) (*InetDiagTCPInfoResp, error) {
-	var tcpInfo *TCPInfo
-	var tcpBBRInfo *TCPBBRInfo
-	for _, a := range attrs {
-		if a.Attr.Type == INET_DIAG_INFO {
-			tcpInfo = &TCPInfo{}
-			if err := tcpInfo.deserialize(a.Value); err != nil {
+			sockInfo := &Socket{}
+			if err := sockInfo.deserialize(m.Data); err != nil {
 				return nil, err
 			}
-			continue
-		}
-
-		if a.Attr.Type == INET_DIAG_BBRINFO {
-			tcpBBRInfo = &TCPBBRInfo{}
-			if err := tcpBBRInfo.deserialize(a.Value); err != nil {
+			attrs, err := nl.ParseRouteAttr(m.Data[sizeofSocket:])
+			if err != nil {
 				return nil, err
 			}
-			continue
+			var tcpInfo *TCPInfo
+			for _, a := range attrs {
+				if a.Attr.Type == INET_DIAG_INFO {
+					tcpInfo = &TCPInfo{}
+					if err := tcpInfo.deserialize(a.Value); err != nil {
+						return nil, err
+					}
+					break
+				}
+			}
+			r := &InetDiagTCPInfoResp{InetDiagMsg: sockInfo, TCPInfo: tcpInfo}
+			result = append(result, r)
 		}
 	}
-
-	return &InetDiagTCPInfoResp{
-		InetDiagMsg: sockInfo,
-		TCPInfo:     tcpInfo,
-		TCPBBRInfo:  tcpBBRInfo,
-	}, nil
+	return result, nil
 }
