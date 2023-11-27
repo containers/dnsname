@@ -1,5 +1,9 @@
 # dnsname plugin
 
+## IMPORTANT
+
+As of 2023, this repository is no longer actively maintained. Our development efforts are happening in [netavark](https://github.com/containers/netavark/) and [aardvark-dns](https://github.com/containers/aardvark-dns/) that should provide a better alternative.
+
 ## Overview
 
 This plugin sets up the use of dnsmasq on a given CNI network so that Pods can resolve each other by name.  When configured,
